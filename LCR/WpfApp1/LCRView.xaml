@@ -1,0 +1,109 @@
+﻿<Window x:Class="LCRSimGame.LCRView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LCRSimGame"
+        mc:Ignorable="d"
+        xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
+        Title="Center Right Left Dice Game" Height="600" Width="800" >
+    <Window.DataContext>
+        <local:LCRViewModel/>        
+    </Window.DataContext>
+    <Window.Resources>
+
+        <Style  TargetType="TextBox">
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style  TargetType="Label">
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style TargetType="StackPanel">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+       
+    </Window.Resources>
+    <Grid Height="600">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0"  >
+            <StackPanel Orientation="Vertical"  >
+                <Label Content="Preset"  />
+                <ComboBox ItemsSource="{Binding Path=Preset}" SelectedItem="{Binding Path=SelectedPreset, NotifyOnTargetUpdated=True}" Width="200" SelectedIndex="{Binding Path=DefaultPresetValue}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" >
+                <Label Content="Games"  />
+                <TextBox Text="{Binding Path=Games}" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical" >
+                <Label Content="Players" />
+                <TextBox Text="{Binding Path=Players}" />
+            </StackPanel>
+            <StackPanel  Orientation="Horizontal" >
+                <Button  Width="100" Height="25" Content="Play" Command="{Binding PlayCommand}" Margin="0,0,10,0"/>
+                <Button  Width="100" Height="25" Content="Cancel" Command="{Binding CancelCommand}"/>
+            </StackPanel>
+            <StackPanel Orientation="Vertical" >
+                <Label Content="Shortest length game" />
+                <TextBox Text="{Binding Path=Shortest}" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical" >
+                <Label Content="Average length game" />
+                <TextBox Text="{Binding Path=Average}" />
+            </StackPanel>
+            <StackPanel Orientation="Vertical" >
+                <Label Content="Longest length game" />
+                <TextBox Text="{Binding Path=Longest}" />
+            </StackPanel>
+        </StackPanel>
+
+       
+        <DockPanel VirtualizingPanel.IsVirtualizing="True" Grid.Column="1" Grid.Row="0" MinWidth="300"  MinHeight="300">          
+            
+                <chartingToolkit:Chart Name="lineChart" Title="Results"  DockPanel.Dock="Top" MinHeight="450" >
+
+                <chartingToolkit:LineSeries  DependentValuePath="Value" IndependentValuePath="Key" ItemsSource="{Binding Path=Output, AsyncState= true}" IsSelectionEnabled="True" Title="Turns" >                   
+                    </chartingToolkit:LineSeries>           
+                                
+            </chartingToolkit:Chart>
+
+            <ItemsControl  ItemsSource="{Binding Path=PlayersList}"  >
+                <ItemsControl.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="Background" Value="Wheat"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=Winner,UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter Property="Background" Value="Red"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Resources>                
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>                     
+                        <DataTemplate>
+                      
+                        <Label Content="{Binding Path=Name}" Width="25" Height="25" Margin="10"  />
+                       
+                    </DataTemplate> 
+                    
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+           
+        </DockPanel>
+      
+
+
+    </Grid>
+</Window>
